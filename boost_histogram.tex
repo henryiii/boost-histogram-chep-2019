@@ -1,0 +1,60 @@
+\documentclass{webofc}
+\usepackage[varg]{txfonts}   % Web of Conferences font
+%
+% Put here some packages required or/and some personnal commands
+%
+%
+\begin{document}
+%
+\title{Recent developments in histogram libraries}
+
+\author{\firstname{Hans Peter} \lastname{Dembinski}\inst{1} \and
+        \firstname{Jim} \lastname{Pivarski}\inst{2} \and
+        \firstname{Henry} \lastname{Schreiner}\inst{2}\fnsep\thanks{\email{hschrein@cern.ch}}
+        % etc.
+}
+
+\institute{
+	Max Planck Institute for Nuclear Physics, Heidelberg, Germany
+\and
+    Princeton University, Princeton, USA 
+}
+
+\abstract{%
+Boost.Histogram, a header-only C++14 library that provides multi-dimensional histograms and profiles, is now available in Boost-1.70. It is extensible, fast, and uses modern C++ features. Using template meta-programming, the most efficient code path for any given configuration is automatically selected. The library includes key features designed for the particle physics community, such as optional under- and overflow bins, weighted increments, reductions, growing axes, thread-safe filling, and memory-efficient counters with high-dynamic range.
+
+Python bindings for Boost.Histogram are being developed in the Scikit-HEP project to provide a fast, easy-to-install package as a backend for other Python libraries and for advanced users to manipulate histograms. Versatile and efficient histogram filling, effective manipulation, multithreading support, and other features make this a powerful tool. This library has also driven package distribution efforts in Scikit-HEP, allowing binary packages hosted on PyPI to be available for a very wide variety of platforms.
+
+Two other libraries fill out the remainder of the Scikit-HEP Python histogramming effort. Aghast is a library designed to provide conversions between different forms of histograms, enabling interaction between histogram libraries, often without an extra copy in memory. This enables a user to make a histogram in one library and then save it in another form, such as saving a Boost.Histogram in ROOT. And Hist is a library providing friendly, analyst-targeted syntax and shortcuts for quick manipulations and fast plotting using these two libraries.
+}
+
+\maketitle
+
+\section{Introduction}
+\label{intro}
+
+There is no shortage of histogramming libraries for Python. However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family 
+
+\section{Boost.Histogram for C++}
+\label{sec-1}
+
+For bibliography use \cite{RefJ}
+
+\subsection{boost-histogram for Python}
+\label{sec-2}
+
+\subsection{The Scikit-HEP family}
+\label{sec-3}
+
+Don't forget to give each section, subsection, subsubsection, and
+paragraph a unique label (see Sect.~\ref{sec-1}).
+
+\subsection{Summary}
+\label{sec-4}
+
+% BibTeX or Biber users please use (the style is already called in the class, ensure that the "woc.bst" style is in your local directory)
+% \bibliography{name or your bibliography database}
+
+
+\end{document}
+
