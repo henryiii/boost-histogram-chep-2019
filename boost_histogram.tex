@@ -33,23 +33,47 @@ Two other libraries fill out the remainder of the Scikit-HEP Python histogrammin
 \section{Introduction}
 \label{intro}
 
-There is no shortage of histogramming libraries for Python. However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family 
+There is no shortage of histogramming libraries for Python (see Table 1). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family 
+
+TABLE 1: Other histogram libraries (add and link later)
 
 \section{Boost.Histogram for C++}
-\label{sec-1}
+\label{sec-bh-cpp}
 
-For bibliography use \cite{RefJ}
+% Ideas:
+% 
+% * Basic overview
+% * Include everything mentioned in abstract if possible: optional under- and overflow bins, weighted increments, reductions, growing axes, thread-safe filling, and memory-efficient counters with high-dynamic range.
+% * Highlight dynamic features that enable Python (or other) bindings (handy place to highlight compile time benefits when dynamic axes, etc not needed)
+% * Describe 1.72's high performance .fill
+% * Include performance plot from slides, diagram from slides (I can add images to repo later - Henry)
 
-\subsection{boost-histogram for Python}
-\label{sec-2}
 
-\subsection{The Scikit-HEP family}
+\section{boost-histogram for Python}
+\label{sec-bh-py}
+
+
+% Hans, please adjust/expand this paragraph as needed! - Henry
+Boost.Histogram was developed with Python in mind. Original prototype bindings using Boost.Python were included in the original draft submitted to Boost; however, to keep the library focused they were removed before the first release. New bindings based on PyBind11 were developed as part of the Scikit-HEP family of Python packages.
+
+The new bindings were designed to be ...
+
+\subsection{Design}
+\subsection{Flexibility}
+\subsection{Speed}
+\subsection{Distribution}
+
+\section{The Scikit-HEP family}
 \label{sec-3}
 
-Don't forget to give each section, subsection, subsubsection, and
-paragraph a unique label (see Sect.~\ref{sec-1}).
+\subsection{Hist}
+\subsection{Aghast}
+\subsection{The Scikit-HEP family}
 
-\subsection{Summary}
+Don't forget to give each section, subsection, subsubsection, and
+paragraph a unique label (see Sect.~\ref{sec-bh-cpp}).
+
+\section{Summary}
 \label{sec-4}
 
 % BibTeX or Biber users please use (the style is already called in the class, ensure that the "woc.bst" style is in your local directory)
