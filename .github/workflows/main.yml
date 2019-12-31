@@ -1,0 +1,16 @@
+name: Build LaTeX document
+
+on: [push]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: xu-cheng/latex-action@master
+        with:
+          root_file: boost_histogram.tex
+      - uses: actions/upload-artifact@v1
+        with:
+          name: boost_histogram.pdf
+          path: boost_histogram.pdf
