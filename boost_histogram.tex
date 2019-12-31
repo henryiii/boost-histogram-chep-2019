@@ -1,5 +1,6 @@
 \documentclass{webofc}
 \usepackage[varg]{txfonts}   % Web of Conferences font
+\usepackage{hyperref}
 %
 % Put here some packages required or/and some personnal commands
 %
@@ -35,7 +36,45 @@ Two other libraries fill out the remainder of the Scikit-HEP Python histogrammin
 
 There is no shortage of histogramming libraries for Python (see Table 1). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family 
 
-TABLE 1: Other histogram libraries (add and link later)
+
+% This table may move to a webpage somewhere instead.
+
+For a collection of some of the histogram libraries currently available in Python see Table~\ref{tab-1}.
+
+\begin{table}
+	\centering
+	\caption{Histogram libraries for Python. For the PyPI column, "Pure" means the library is pure Python, "Wheels" means it is compiled but binary wheels are available, "Source" means the code is there, but must be compiled and may require other dependencies, and "No" means it is not hosted on PyPI. Old projects that predate universal (pure python) wheels may be incorrectly listed as "Source".}
+	\label{tab-libraries}       % Give a unique label
+	\begin{tabular}{llll}
+		\hline
+		Library                                                                      & Updated & PyPI   & Notes                                                \\ \hline
+		\href{https://www.numpy.org/}{numpy}                                         & 2019         & Wheels & Very simple histogramming functions                  \\
+		\href{https://coffeateam.github.io/coffea/notebooks/histograms.html}{coffea} & 2019         & Pure   & Family of tools for HEP Columnar analysis            \\
+		\href{https://histogrammar.org}{Histogrammar}                                & 2019         & Pure   & Multilanguage, limited support                       \\
+		\href{https://pygram11.readthedocs.io}{pygram11}                             & 2019         & Wheels & Unix only, Python 3 only                             \\
+		\href{https://root.cern.ch/pyroot}{PyROOT}                                   & 2019         & No     & CERN's ROOT, UNIX binaries on conda-forge            \\
+		\href{https://yoda.hepforge.org}{YODA}                                       & 2019         & No     & HEP tool for MCnet                                   \\
+		\href{https://physt.readthedocs.io/en/latest/tutorial.html}{physt}           & 2019         & Pure   & Non-HEP specific tool                                \\
+		\href{https://github.com/astrofrog/fast-histogram}{fast-histogram}           & 2019         & Yes    & Fast but limited                                     \\
+		\href{https://vaex.io}{Vaex}                                                 & 2019         & Source & Large system for data analysis                       \\
+		\href{https://pypi.org/project/hdrhistogram/}{hdrhistogram}                  & 2019         & Source & Multilanguage, large range                           \\
+		\href{https://pypi.org/project/multihist/}{multihist}                        & 2019         & Pure   & Numpy wrapper for syntax                             \\
+		\href{https://github.com/scikit-hep/histbook}{HistBook}                      & 2018         & Pure   & Archived, Replaced by boost-histogram / hist         \\
+		\href{https://pypi.org/project/qhist/}{qhist}                                & 2018         & Source & ROOT required, Python 2.7 only                       \\
+		\href{https://github.com/theodoregoetz/histogram}{theodoregoetz}             & 2018         & No     & Tried to combine many of the above                   \\
+		\href{https://github.com/drdavis/rootplotlib}{rootplotlib}                   & 2016         & No     & ROOT backend                                         \\
+		\href{https://pypi.org/project/matplotlib-hep/}{matplotlib-hep}              & 2016         & Source & Focused on plotting                                  \\
+		\href{https://github.com/jpivarski/svgfig}{SVGFig}                           & 2016         & No     & Plotting framework                                   \\
+		\href{https://github.com/jpivarski/plothon}{Plothon}                         & 2015         & No     & Predecessor to SVGFig                                \\
+		\href{https://pypi.org/project/pyhistogram/}{pyhistogram}                    & 2014         & Pure   & Inspired by rootpy                                   \\
+		\href{https://pypi.org/project/pypeaks}{pypeaks}                             & 2014         & Pure   & Peak detection                                       \\
+		\href{https://github.com/opendatagroup/cassius}{Cassius}                     & 2013         & No     & Statistical Modeling Package                         \\
+		\href{https://pypi.org/project/histogramy}{histogramy}                       & 2013         & Pure   & 1D with some fitting tools                           \\
+		\href{https://pypi.org/project/histogram}{histogram}                         & 2011         & Source & For Distributed Data Analysis for Neutron Scattering \\
+		\href{https://pypi.org/project/SimpleHist/}{SimpleHist}                      & 2011         & Pure   & Numpy based                                          \\
+		\href{https://pypi.org/project/paida/}{paida}                                & 2007         & Source & Analysis and plotting                                \\ \hline
+	\end{tabular}
+\end{table}
 
 \section{Boost.Histogram for C++}
 \label{sec-bh-cpp}
