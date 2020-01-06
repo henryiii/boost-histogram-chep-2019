@@ -18,7 +18,7 @@
 \institute{
 	Max Planck Institute for Nuclear Physics, Heidelberg, Germany
 \and
-    Princeton University, Princeton, USA 
+    Princeton University, Princeton, USA
 }
 
 \abstract{%
@@ -34,7 +34,7 @@ Two other libraries fill out the remainder of the Scikit-HEP Python histogrammin
 \section{Introduction}
 \label{intro}
 
-There is no shortage of histogramming libraries for Python (see Table 1). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family 
+There is no shortage of histogramming libraries for Python (see Table 1). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family
 
 
 % This table may move to a webpage somewhere instead.
@@ -80,12 +80,21 @@ For a collection of some of the histogram libraries currently available in Pytho
 \label{sec-bh-cpp}
 
 % Ideas:
-% 
+%
 % * Basic overview
 % * Include everything mentioned in abstract if possible: optional under- and overflow bins, weighted increments, reductions, growing axes, thread-safe filling, and memory-efficient counters with high-dynamic range.
 % * Highlight dynamic features that enable Python (or other) bindings (handy place to highlight compile time benefits when dynamic axes, etc not needed)
 % * Describe 1.72's high performance .fill
 % * Include performance plot from slides, diagram from slides (I can add images to repo later - Henry)
+
+Boost.Histogram is a header-only C++14 library which offers a feature-rich multi-dimensional generalized histograms. It is part of the \href{https://www.boost.org/}{Boost C++ Libraries} and only depends on a few other header-only libraries from the Boost project and the C++ standard library. The feature set was designed with the needs of the particle physics, astroparticle physics, and wider data analysis community in mind, in particular, feature parity with the histogram implementations from the \href{https://root.cern.ch/}{ROOT framework} and the \href{https://www.gnu.org/software/gsl/}{GNU Scientific Library}.
+
+A histogram in the narrow sense is a collection of counts $n_i$, where each is linked to one interval out of a sequence of non-overlapping consecutive intervals, called \emph{bins}. When a value $x$ is passed to a histogram, the bin $i$ is found with $x_{i,0} \le x < x_{i,1}$ and the associated count $n_i$ is incremented. A multi-dimensional histogram has accepts sets of values $(x, y, z, ...)$. For each value of the tuple an independent sequence of bins exists, which we call an \emph{axis}. The count $n_{ijk\dots}$ is now looked up based on an multi-dimensional index obtained from the mappings $(x \rightarrow i, y \rightarrow j, z \rightarrow k, ...)$.
+
+Boost.Histogram generalizes the narrow histogram concept. Firstly, the mapping from input value to index provided by an axis $x \rightarrow i$ can be completely customized by users. The values are not restricted to real numbers or numbers at all. Many C++ objects can be used as values, for example strings.
+
+The library was designed to be easy to use for the casual user and still offering high amount flexibility and extensibility for the power user. Compatibility with other Boost libraris and the C++ standard library was another design goal. This allows Instead of implementing
+
 
 
 \section{boost-histogram for Python}
@@ -120,4 +129,3 @@ paragraph a unique label (see Sect.~\ref{sec-bh-cpp}).
 
 
 \end{document}
-
