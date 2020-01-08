@@ -1,6 +1,7 @@
 \documentclass{webofc}
 \usepackage[varg]{txfonts}   % Web of Conferences font
 \usepackage{hyperref}
+
 %
 % Put here some packages required or/and some personnal commands
 %
@@ -87,15 +88,55 @@ For a collection of some of the histogram libraries currently available in Pytho
 % * Describe 1.72's high performance .fill
 % * Include performance plot from slides, diagram from slides (I can add images to repo later - Henry)
 
-Boost.Histogram is a header-only C++14 library which offers a feature-rich multi-dimensional generalized histograms. It is part of the \href{https://www.boost.org/}{Boost C++ Libraries} and only depends on a few other header-only libraries from the Boost project and the C++ standard library. The feature set was designed with the needs of the particle physics, astroparticle physics, and wider data analysis community in mind, in particular, feature parity with the histogram implementations from the \href{https://root.cern.ch/}{ROOT framework} and the \href{https://www.gnu.org/software/gsl/}{GNU Scientific Library}.
+Boost.Histogram is a header-only C++14 library which implements feature-rich multi-dimensional generalized histograms. It is part of the \href{https://www.boost.org/}{Boost C++ Libraries} and only depends on a few other header-only libraries from the Boost project and the C++ standard library. The feature set of Boost.Histogram was designed with the needs of the (astro)particle physics community and the wider data analysis community in mind. In particular, feature parity with the histogram implementations from the \href{https://root.cern.ch/}{ROOT framework} and the \href{https://www.gnu.org/software/gsl/}{GNU Scientific Library} was a central goal.
 
-A histogram in the narrow sense is a collection of counts $n_i$, where each is linked to one interval out of a sequence of non-overlapping consecutive intervals, called \emph{bins}. When a value $x$ is passed to a histogram, the bin $i$ is found with $x_{i,0} \le x < x_{i,1}$ and the associated count $n_i$ is incremented. A multi-dimensional histogram has accepts sets of values $(x, y, z, ...)$. For each value of the tuple an independent sequence of bins exists, which we call an \emph{axis}. The count $n_{ijk\dots}$ is now looked up based on an multi-dimensional index obtained from the mappings $(x \rightarrow i, y \rightarrow j, z \rightarrow k, ...)$.
+The library was designed to be easy to use for the casual user, while offering a high amount flexibility and extensibility for the power user. In a classic C++ design based on run-time polymorphism, flexibility and extensibility comes at the cost of performance. Boost.Histogram avoids the run-time trade-off and achieves higher performance than other libraries with static polymorphism based on templates and modern template meta-programming.
 
-Boost.Histogram generalizes the narrow histogram concept. Firstly, the mapping from input value to index provided by an axis $x \rightarrow i$ can be completely customized by users. The values are not restricted to real numbers or numbers at all. Many C++ objects can be used as values, for example strings.
+Compatibility with other Boost libraris and the C++ standard library was another central design goal. By instead adhering to standard interfaces, the library avoids to duplicate functionality provided by other libraries, especially the standard library. For example, these are one-liners:
+\begin{itemize}
+\item Sum all counts with \verb|std::accumulate|.
+\item Find the cell with the highest count with \verb|std::max_element|.
+\item Compute the cumulative distribution with \verb|std::partial_sum|.
+\end{itemize}
 
-The library was designed to be easy to use for the casual user and still offering high amount flexibility and extensibility for the power user. Compatibility with other Boost libraris and the C++ standard library was another design goal. This allows Instead of implementing
+\subsection{Generalized histograms}
+\label{sec-bh-cpp-gen}
 
+A histogram in the common sense is a collection of counts $n_i$, where each is associated to an interval out of a sequence of non-overlapping consecutive intervals, called \emph{bins}. When a value $x$ is passed to a histogram, the bin $i$ is found which contains $x$ and the associated count $n_i$ is incremented. A multi-dimensional histogram accepts value tuples $(x, y, z, \dots)$. For each value of the tuple an independent sequence of bins exists, which we call an \emph{axis}. The count is now looked up based on an multi-dimensional index $(i,j,k,\dots)$ obtained from the mappings $(x \rightarrow i, y \rightarrow j, z \rightarrow k, \dots)$.
 
+Boost.Histogram generalizes the classic histogram concept in three ways.
+\begin{description}
+\item[Custom axis objects.] The mapping from input value to index provided by an axis $x \rightarrow i$ can be completely user-defined. Values are not restricted to numbers, arbitrary C++ objects can be used as values when an appropriate mapping is provided, for example strings. Bins do not have to be consecutive, they can have gaps and arbitrary hyperdimensional shapes. Hexagonal binning is possible, for instance, or bins that are HEALPIX pixels (although neither are currently implemented).
+
+\item[Custom accumulators.] The counts in a generalized histogram can be replaced by user-defined accumulators. Accumulators can take any number of \emph{samples}, which like values can be arbitrary C++ objects. Values and samples are passed to the generalized histogram together; values are converted to indices which address the accumulator, and samples are passed to the accumulator. The library provides a few standard accumulators, for example, to compute mean and variance of samples in each bin. This is called a \emph{profile} in the ROOT framework and a separate class, while it is just another kind of histogram in Boost.Histogram.
+
+\item[Custom storages.] It is possible to completely customize how counts (or accumulators) are allocated and addressed in memory. The sub-component responsible for this is called a \emph{storage}. The histogram class converts the multi-dimensional index $(i,j,k,\dots)$ into a single linear index, which is passed to the storage. The standard storage allocates memory upfront for all cells and places the counts sequentially in memory, using the linear index as a memory offset. This gives the best look-up performance and is space-efficient for densely filled histograms, since it is not necessary to store the linear index explicitly for each cell. The downside of dense storage is that all cells take up space, even if they contain zero counts. The library also supports sparse storage based on an STL-compliant hash map. Only cells with non-zero counts use space in such a sparse storage, but each cell has to store its linear index in addition to the payload and some overhead for hash-based addressing.
+
+The memory allocation strategy of a storage can be customized as well. The standard storage allocates memory dynamically from the heap, but the library builtin support for a storage based a fixed-size stack-based memory buffer. The latter allows one to efficiently create and destroy many small histograms, for example. The builtin \verb|unlimited_storage| dynamically allocates memory to grow the counter capacity as needed, starting a single byte per cell up to arbitrarily many bytes (limited by available memory only). This storage offers a unique no-overflow-guarantee and is memory-efficient in high dimensions, where the number of cells is large and the small memory footprint per cell pays off.
+\end{description}
+
+The three sub-components of a generalized histogram, axis types, storages, and accumulators, are orthogonal. This means that any sub-component can be replaced or modified independently of the others. Orthogonal design is very powerful since it offers a huge customization potential from all possible combinations.
+
+\subsection{Notable features}
+\label{sec-bh-cpp-feat}
+
+We briefly list other notable features here.
+
+\begin{description}
+\item[Arithmetic operators.] Histograms support the standard math operators $+, -, \cdot, /$.
+
+\item[Growing axes.] A standard axis has a fixed value range and number of bins, defined at the time of construction. The library also supports growing axis, whose initial range and bin number grows with the input. If a value is encountered that would fall outside of the axis range, the axis range is extended to contain the value and the number of bins is increased.
+
+\item[Optional underflow and overflow bins.] Each axis of the histogram can have optional underflow and overflow bins. These are extra bins beyond the defined range of the axis, they count all values which fall below the smallest value on the axis or above the largest value, respectively. The existence or absense of these bins is mostly transparent for the user. They are very useful to detect outliers and to offer lossless reductions (explained below).
+
+\item[Reductions.] The library offers tools to reduce the memory footprint of a histograms by reducing the number of bins of an axis or by completely removing an axis. The number of bins of an axis can be reduced by shrinking its value range and/or by merging any number of adjacent bins into one larger bin. Likewise, an axis can be removed completely by summing over its bins (a so called \emph{projection}). In both cases, the presence of underflow and overflow bins guarantees that the reduced histogram is identical to one obtained that was filled with the orginal values. This is general not possible when underflow and overflow bins are missing.
+
+\item[Thread-safe filling of histograms.] Filling histograms with values is not thread-safe in general, but the library offers a builtin thread-safe counter based on a \verb|std::atomic| integer type and a thread-safe locking infrastructure for storages, the latter is needed when growing axes are present, which can trigger a resizing of the storage.
+
+\item[Static and dynamic axis configuration.] The library supports both histograms with static and dynamic axis containers. A histogram with a static axis container is fixed at compile-time in the number and types of axes. Vice-versa, number and axis types can vary at run-time for a dynamic axis holder. The static axis container produces histograms which are more performant, as the compiler can find more opportunities to optimize the code. When Boost.Histogram is used as a backend in a run-time environment like Python, however, axes must be configurable at run-time. The performance difference vanishes when the histogram is filled with chunks of values at once, see next item.
+
+\item[Filling individual values and chunks of values.] Histograms can be filled with one value at once or by passing a contiguous chunk of values at once. Both cases are handled by separate code segments, which were highly optimized for performance. Passing contiguous chunks of values is up to five times faster for chunks of moderate size (32768 values) than filling one value at a time, and therefore preferred when chunks are available. Using the chunk code for single values would be slow, however, and therefore the other optimized code path exists.
+\end{description}
 
 \section{boost-histogram for Python}
 \label{sec-bh-py}
