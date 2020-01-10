@@ -1,6 +1,20 @@
 \documentclass{webofc}
 \usepackage[varg]{txfonts}   % Web of Conferences font
+
+\usepackage{tikz}
+\usetikzlibrary{arrows, calc, decorations.pathreplacing}
+
 \usepackage{hyperref}
+
+
+\definecolor{presDark}{RGB}{39,1,136}
+\definecolor{presDark2}{RGB}{87,80,149}
+\definecolor{presLight}{RGB}{139,131,215}
+\definecolor{presLight2}{RGB}{0,129,203}
+
+\definecolor{presHighlight}{RGB}{215,50,50}
+
+
 
 %
 % Put here some packages required or/and some personnal commands
@@ -35,12 +49,65 @@ Two other libraries fill out the remainder of the Scikit-HEP Python histogrammin
 \section{Introduction}
 \label{intro}
 
-There is no shortage of histogramming libraries for Python (see Table 1). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family
+There is no shortage of histogramming libraries for Python (see Table \ref{tab-libraries}). However, many/most of these are abandoned, have a narrow focus, and most importantly, have little or no interaction with other histogramming libraries. For the Scikit-HEP family, Histogramming was identified as a weak point in the scientific Python stack that could be addressed directly in Scikit-HEP. At this time, a new histogramming library for C++ was emerging and was about to be proposed for inclusion in the Boost Libraries. Working together with the author of what would become Boost.Histogram after a thorough review and unanimous approval, a plan was devised to build a Python system for Histogramming on top of Boost.Histogram. Together, these two closely related projects have provided the most exciting development in Histogramming for HEP in recent years.
 
+\begin{figure}[h]
+	
+\begin{center}
+\begin{tikzpicture}[every path/.style={thick}]
 
-% This table may move to a webpage somewhere instead.
+% Main grid
+\draw [presDark] (-2,-2) rectangle (2,2);
+\foreach \i in {-1,0,1} {
+	\draw [presDark] (-2,\i) -- (2,\i);
+}
+\foreach \i in {-1.50465122, -0.76393202,  0.34370152} {
+	\draw [presDark] (\i, -2) -- (\i, 2);
+}
+\draw [latex-, presDark] (2,2) -- (2.4,2.2) node [right] {Storage $\begin{pmatrix}\textrm{Static}\\ \textrm{Dynamic}\end{pmatrix}$};
 
-For a collection of some of the histogram libraries currently available in Python see Table~\ref{tab-1}.
+% Left axis
+\draw [presDark2] (-2.3,-2) -- (-2.3,2);
+\foreach \i in {-2,-1,0,1,2} {
+	\draw [presDark2] (-2.45,\i) -- (-2.15,\i);
+}
+\node at (-2.3,2) [above, presDark2] {Regular axis};
+
+% Bottom axis
+\draw [presDark2] (-2,-2.3) -- (2,-2.3);
+\foreach \i in {-2.        , -1.50465122, -0.76393202,  0.34370152,  2.} {
+	\draw [presDark2] (\i, -2.45) -- (\i, -2.15);
+}
+\node at (2,-2.2) [presDark2, right=.4cm, align=left] {Regular axis with\\log transform};
+
+% Axes
+\begin{scope}[xshift=-2.9cm, yshift=-2.3cm, rotate=45]
+\draw [presDark2, decorate, decoration={brace,amplitude=10pt}, xshift=-4pt, yshift=0pt]
+(0.5,-0.7) -- (0.5,0.7);
+\node at (-.3,0) [presDark2] {axes};
+\end{scope}
+
+% Overflow bin
+\draw [presLight2] (2.05,-2.3) -- (2.4, -2.3);
+\draw [presLight2] (2.4, -2.45) -- (2.4, -2.15);
+\draw [presLight2, latex- ] (2.2, -2.3) -- (2.2, -2.6) node [below] {Optional overflow};
+
+% Underflow bin
+\draw [presLight2] (-2.05,-2.3) -- (-2.4, -2.3);
+\draw [presLight2] (-2.4, -2.45) -- (-2.4, -2.15);
+\draw [presLight2, latex- ] (-2.25, -2.3) -- (-1.8, -2.6) node [below] {Optional underflow};
+
+% Accumulators
+\node (accum) at (1.2,1.5) [circle, minimum width=.7cm, draw, presLight] {};
+\draw [presLight, latex-] (accum) -- (2.25, .5) node [right, align=left] {Accumulator\\int, double,\\unlimited, ...};
+
+\end{tikzpicture}
+\caption{Components of a histogram.}
+\label{fig-design}
+\end{center}
+	
+\end{figure}
+
 
 \begin{table}
 	\centering
@@ -139,15 +206,31 @@ We briefly list other notable features here.
 \end{description}
 
 \section{boost-histogram for Python}
-\label{sec-bh-py}
-
+\label{sec-bhp-intro}
 
 % Hans, please adjust/expand this paragraph as needed! - Henry
 Boost.Histogram was developed with Python in mind. Original prototype bindings using Boost.Python were included in the original draft submitted to Boost; however, to keep the library focused they were removed before the first release. New bindings based on PyBind11 were developed as part of the Scikit-HEP family of Python packages.
 
-The new bindings were designed to be ...
+The new bindings were designed around four key ideas based on a study of the libraries in Table~\ref{tab-libraries}: \emph{Design}, \emph{Flexibility}, \emph{Speed}, and \emph{Distribution}. No single library existing library provided a strong entry in all four of these areas.
 
 \subsection{Design}
+\label{sec-bhp-design}
+
+The design of boost-histogram follows Boost.Histogram closely, with appropriate changes to adapt to Python and interactive usage. The description of a Histogram matches that described in Section~\ref{sec-bh-cpp-gen}.
+
+The features listed in Section~\ref{sec-bh-cpp-feat} are mostly available to Python users. Python histograms support \textbf{arithmetic operators}. Most axes types support \textbf{growing axes} and \textbf{optional underflow and overflow bins}. The special storage that enables \textbf{thread-safe filling of histograms} is provided. And, since Python is a dynamic language, the bindings take advantage of \textbf{dynamic axis configuration} to set up all histograms. The other features adapted or specific to Python are listed below.
+
+\begin{description}
+\item[Filling with chunks of values.] The Python library supports filling contiguous chunks of values, based on the Boost.Histogram C++ feature. Since this looks like a Numpy operation, the differences should be noted. The data to be filled must be in the correct format (doubles or ints), and must be continuous (slices and other operations in Numpy can create arrays with strides, and Boost.Histogram's fill feature does not operate on strides). If these conditions are not met, a copy is made, affecting the performance and memory usage slightly.
+\item[UHI (reductions).] Unified Histogram Indexing (UHI) was developed to provide a way for histograms to be manipulated in Python in a natural, concise way, and to decouple the "tags" describing actions and the histogram library performing the actions. Custom actions can be developed by users. See Section~\ref{sec-bhp-uhi} for more details.
+\item[Python interaction.] Histograms (and the other objects provided) support the standard python copy, deepcopy, and pickle protocols, and have docstrings, signatures (enhanced in Python 3), IPython keyboard completions, and natural textual representation,  providing a native experience for Python.
+\item[Numpy interaction.] Special care was placed into making the library interact gracefully with Numpy. The underlying bin data for even accumulator based storages is available via mutable, no copy access. The  Histogram object conforms to the Python buffer protocol. A special method is provided to produce Numpy style output tuples. For input, boost-histogram provides a numpy module that provides functions identical to the three Numpy histogram functions, but powered by boost-histogram (and as such, up to 10 times faster than native numpy histograms), and with extra keyword only arguments to provide a way to return boost-histogram objects instead of tuples.
+\end{description}
+
+
+\subsubsection{UHI}
+\label{sec-bhp-uhi}
+
 \subsection{Flexibility}
 \subsection{Speed}
 \subsection{Distribution}
