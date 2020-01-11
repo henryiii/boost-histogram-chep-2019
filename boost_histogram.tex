@@ -231,7 +231,19 @@ The features listed in Section~\ref{sec-bh-cpp-feat} are mostly available to Pyt
 \subsubsection{UHI}
 \label{sec-bhp-uhi}
 
+Unified Histogram Indexing (UHI) was inspired by the an early design for Aghast (see Section~\ref{sec-aghast}). The key advancement in UHI was the design of a general API for providing "tag" types that can be used to perform operations in indexing. These tags can be provided by one library and used by another, and new tags can be written by users. And indexing is carefully designed to either behave like a Numpy array index if the syntax is allowed on both arrays and histograms, or to give an error on one or the other. The goal was to minimize situations where indexing will silently fail if you interchange histograms and arrays.
+
+UHI allows single bin and array setting and accessing, and even provides optional access to the flow bins when setting. The third element of the Python slice syntax is used to perform actions on axes, such as rebinning or summation. While not currently implemented in version 0.6.2, the UHI specification includes arbitrary actions on axes. UHI was originally designed to provide an action per axis, though through user requests, it was expanded to allow a mapping to be provided, allowing a small number of axes to be operated on without having to list every axis.
+
+\subsubsection{Axes}
+\label{sec-bhp-axes}
+
+Axes are available in a special augmented tuple. This tuple can accept any method a single axis can, and performs the property access or the method call on each axes, returning a tuple or ND array as appropriate. This makes many traditionally complex procedures a simple, concise line or two.
+
 \subsection{Flexibility}
+
+Great care was taken to keep the incredible flexibility of Boost.Histogram intact in a dynamic, pre-compiled environment. A collection of over 20 axes types are provided, including \textbf{Regular} binning, \textbf{Integer} binning, and \textbf{Variable} binning, each with variants for underflow/overflow and growth. Both integer and string category axes are provided, also with optional growth. And regular binning can have a transform applied; the transform can be created by the user with a compiled callback using a language like Numba, with a maximum of about 7\% speed penalty.
+
 \subsection{Speed}
 \subsection{Distribution}
 
@@ -240,6 +252,8 @@ The features listed in Section~\ref{sec-bh-cpp-feat} are mostly available to Pyt
 
 \subsection{Hist}
 \subsection{Aghast}
+\label{sec-aghast}
+
 \subsection{The Scikit-HEP family}
 
 Don't forget to give each section, subsection, subsubsection, and
