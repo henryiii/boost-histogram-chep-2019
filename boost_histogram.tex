@@ -242,10 +242,21 @@ Axes are available in a special augmented tuple. This tuple can accept any metho
 
 \subsection{Flexibility}
 
-Great care was taken to keep the incredible flexibility of Boost.Histogram intact in a dynamic, pre-compiled environment. A collection of over 20 axes types are provided, including \textbf{Regular} binning, \textbf{Integer} binning, and \textbf{Variable} binning, each with variants for underflow/overflow and growth. Both integer and string category axes are provided, also with optional growth. And regular binning can have a transform applied; the transform can be created by the user with a compiled callback using a language like Numba, with a maximum of about 7\% speed penalty.
+Great care was taken to keep the incredible flexibility of Boost.Histogram intact in a dynamic, pre-compiled environment. A collection of over 20 axes types are provided, including \textbf{Regular} binning, \textbf{Integer} binning, and \textbf{Variable} binning, each with variants for underflow/overflow and growth. Both integer and string category axes are provided, also with optional growth. And regular binning can have a transform applied; the transform can be created by the user with a compiled callback using a language like Numba, with a maximum of about 7\% penalty in speed over a precompiled function in C++.
+
+Seven storages are provided, as well, including three "complex" storages made from accumulators. The \textbf{Weight} storage provides high precision weighted sums that track the count as well. The \textbf{Mean} and \textbf{WeightedMean} storages can be used to produce "profile" histograms that track the average of a weight in each bin, rather than the total number of entries observed. In some situations, a N dimensional profile can replace a N+1 dimensional histogram.
 
 \subsection{Speed}
+
+
 \subsection{Distribution}
+
+To be used in the modern scientific Python software ecosystem, a library must fulfill a variety of packaging criteria. All modern packages should be hosted on PyPI.org and should provide \textbf{wheels}. Pure Python packages only need to provide universal wheels, which are smaller and do not execute a setup.py while installing, but otherwise are similar to a source package. However, compiled packages need to provide a collection of wheels, one for each Python version and each supported platform. A system was developed for boost-histogram to build these wheels on the Azure DevOps cloud platform Continuous Integration (CI) system; these are automatically built whenever a new release is made. The system developed for boost-histogram is now directly in use by three other Scikit-HEP packages, and a modified version is being used in a fourth beta package.
+
+On of the challanges unique to boost-histogram was the need for C++14 support by the compiler; the classic "ManyLinux1" wheels were not sufficient for compiling boost-histogram. The new ManyLinux2014 format was coming out when this was being developed, and is used, but the older ManyLinux1 specification is still in heavy use 
+(primary due to older versions of pip, the package installer for Python), so a special docker image was created that has a newer compiler but conforms to ManyLinux1. This allows boost-histogram to support both specifications.
+
+The wheel building system (and therefore boost-histogram) supports Python 2.7 and Python 3.5 through 3.8 on ManyLinux1 with 32-bit and 64-bit flavors, as well as ManyLinux2010 in 64-bit. It supports Python 2.7 and 3.6 through 3.8 on macOS 64-bit and Windows in 32-bit and 64-bit architectures. 
 
 \section{The Scikit-HEP family}
 \label{sec-3}
