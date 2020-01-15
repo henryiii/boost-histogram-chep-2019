@@ -147,7 +147,7 @@ There is no shortage of histogramming libraries for Python (see Table \ref{tab-l
 % * Describe 1.72's high performance .fill
 % * Include performance plot from slides, diagram from slides (I can add images to repo later - Henry)
 
-Boost.Histogram is a header-only C++14 library which implements feature-rich multi-dimensional generalized histograms. It is part of the \href{https://www.boost.org/}{Boost C++ Libraries} and only depends on a few other header-only libraries from the Boost project and the C++ standard library. The feature set of Boost.Histogram was designed with the needs of the (astro)particle physics community and the wider data analysis community in mind. In particular, feature parity with the histogram implementations from the \href{https://root.cern.ch/}{ROOT framework} and the \href{https://www.gnu.org/software/gsl/}{GNU Scientific Library} was a central goal.
+Boost.Histogram is a header-only C++14 library which implements feature-rich multi-dimensional generalized histograms. It is part of the \href{https://www.boost.org/}{Boost C++ Libraries} and only depends on a few other header-only libraries from the Boost project and the C++ standard library. The feature set of Boost.Histogram was designed with the needs of the (astro)particle physics community and the wider data analysis community in mind. In particular, feature parity with the histogram implementations from the \href{https://root.cern.ch/}{ROOT framework}~\cite{Brun:1997pa} and the \href{https://www.gnu.org/software/gsl/}{GNU Scientific Library} was a central goal.
 
 The library was designed to be easy to use for the casual user, while offering a high amount flexibility and extensibility for the power user. In a classic C++ design based on run-time polymorphism, flexibility and extensibility comes at the cost of performance. Boost.Histogram avoids the run-time trade-off and achieves higher performance than other libraries with static polymorphism based on templates and modern template meta-programming.
 
@@ -223,7 +223,7 @@ The features listed in Section~\ref{sec-bh-cpp-feat} are mostly available to Pyt
 \subsubsection{UHI}
 \label{sec-bhp-uhi}
 
-Unified Histogram Indexing (UHI) was inspired by the an early design for Aghast (see Section~\ref{sec-aghast}). The key advancement in UHI was the design of a general API for providing "tag" types that can be used to perform operations in indexing. These tags can be provided by one library and used by another, and new tags can be written by users. And indexing is carefully designed to either behave like a Numpy array index if the syntax is allowed on both arrays and histograms, or to give an error on one or the other. The goal was to minimize situations where indexing will silently fail if you interchange histograms and arrays.
+\textbf{Unified Histogram Indexing} (UHI) was inspired by the an early design for Aghast (see Section~\ref{sec-aghast}). The key advancement in UHI was the design of a general API for providing "tag" types that can be used to perform operations in indexing. These tags can be provided by one library and used by another, and new tags can be written by users. And indexing is carefully designed to either behave like a Numpy array index if the syntax is allowed on both arrays and histograms, or to give an error on one or the other. The goal was to minimize situations where indexing will silently fail if you interchange histograms and arrays.
 
 UHI allows single bin and array setting and accessing, and even provides optional access to the flow bins when setting. The third element of the Python slice syntax is used to perform actions on axes, such as rebinning or summation. While not currently implemented in version 0.6.2, the UHI specification includes arbitrary actions on axes. UHI was originally designed to provide an action per axis, though through user requests, it was expanded to allow a mapping to be provided, allowing a small number of axes to be operated on without having to list every axis.
 
@@ -288,7 +288,7 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 	\draw (bh) -- (aghast);
 	\draw (root) -- (aghast);
 	\draw (mplhep) -- (aghast);
-	\draw (hist) -- (aghast);
+	\draw (hist) -- (aghast);i
 	\draw (hist) -- (bh);
 	\draw (physt) -- (aghast);
 	\draw (others) -- (aghast);
@@ -317,10 +317,8 @@ Hist is a planned project that will provide an analyst-centric interface for his
 \label{sec-4}
 
 
-The future for Histograms in Python is an exciting one, as high performance histograms represented as objects are now available in boost-histogram, and future releases such as hist will provide a simple interface for analysts.
+The future for Histograms in Python is an exciting one, as high performance histograms represented as objects are now available in boost-histogram, and future releases such as Hist will provide a simple interface for analysts.
 
-% BibTeX or Biber users please use (the style is already called in the class, ensure that the "woc.bst" style is in your local directory)
-% \bibliography{name or your bibliography database}
-
+\bibliography{boost_histogram}
 
 \end{document}
