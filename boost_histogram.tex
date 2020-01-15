@@ -7,14 +7,6 @@
 \usepackage{hyperref}
 
 
-\definecolor{presDark}{RGB}{39,1,136}
-\definecolor{presDark2}{RGB}{87,80,149}
-\definecolor{presLight}{RGB}{139,131,215}
-\definecolor{presLight2}{RGB}{0,129,203}
-
-\definecolor{presHighlight}{RGB}{215,50,50}
-
-
 
 %
 % Put here some packages required or/and some personnal commands
@@ -56,49 +48,49 @@ There is no shortage of histogramming libraries for Python (see Table \ref{tab-l
 \begin{tikzpicture}[every path/.style={thick}]
 
 % Main grid
-\draw [presDark] (-2,-2) rectangle (2,2);
+\draw (-2,-2) rectangle (2,2);
 \foreach \i in {-1,0,1} {
-	\draw [presDark] (-2,\i) -- (2,\i);
+	\draw (-2,\i) -- (2,\i);
 }
 \foreach \i in {-1.50465122, -0.76393202,  0.34370152} {
-	\draw [presDark] (\i, -2) -- (\i, 2);
+	\draw (\i, -2) -- (\i, 2);
 }
-\draw [latex-, presDark] (2,2) -- (2.4,2.2) node [right] {Storage $\begin{pmatrix}\textrm{Static}\\ \textrm{Dynamic}\end{pmatrix}$};
+\draw [latex-] (2,2) -- (2.4,2.2) node [right] {Storage $\begin{pmatrix}\textrm{Static}\\ \textrm{Dynamic}\end{pmatrix}$};
 
 % Left axis
-\draw [presDark2] (-2.3,-2) -- (-2.3,2);
+\draw (-2.3,-2) -- (-2.3,2);
 \foreach \i in {-2,-1,0,1,2} {
-	\draw [presDark2] (-2.45,\i) -- (-2.15,\i);
+	\draw (-2.45,\i) -- (-2.15,\i);
 }
-\node at (-2.3,2) [above, presDark2] {Regular axis};
+\node at (-2.3,2) [above] {Regular axis};
 
 % Bottom axis
-\draw [presDark2] (-2,-2.3) -- (2,-2.3);
+\draw (-2,-2.3) -- (2,-2.3);
 \foreach \i in {-2.        , -1.50465122, -0.76393202,  0.34370152,  2.} {
-	\draw [presDark2] (\i, -2.45) -- (\i, -2.15);
+	\draw (\i, -2.45) -- (\i, -2.15);
 }
-\node at (2,-2.2) [presDark2, right=.4cm, align=left] {Regular axis with\\log transform};
+\node at (2,-2.2) [right=.4cm, align=left] {Regular axis with\\log transform};
 
 % Axes
 \begin{scope}[xshift=-2.9cm, yshift=-2.3cm, rotate=45]
-\draw [presDark2, decorate, decoration={brace,amplitude=10pt}, xshift=-4pt, yshift=0pt]
+\draw [decorate, decoration={brace,amplitude=10pt}, xshift=-4pt, yshift=0pt]
 (0.5,-0.7) -- (0.5,0.7);
-\node at (-.3,0) [presDark2] {axes};
+\node at (-.3,0) {axes};
 \end{scope}
 
 % Overflow bin
-\draw [presLight2] (2.05,-2.3) -- (2.4, -2.3);
-\draw [presLight2] (2.4, -2.45) -- (2.4, -2.15);
-\draw [presLight2, latex- ] (2.2, -2.3) -- (2.2, -2.6) node [below] {Optional overflow};
+\draw (2.05,-2.3) -- (2.4, -2.3);
+\draw (2.4, -2.45) -- (2.4, -2.15);
+\draw [latex- ] (2.2, -2.3) -- (2.2, -2.6) node [below] {Optional overflow};
 
 % Underflow bin
-\draw [presLight2] (-2.05,-2.3) -- (-2.4, -2.3);
-\draw [presLight2] (-2.4, -2.45) -- (-2.4, -2.15);
-\draw [presLight2, latex- ] (-2.25, -2.3) -- (-1.8, -2.6) node [below] {Optional underflow};
+\draw (-2.05,-2.3) -- (-2.4, -2.3);
+\draw (-2.4, -2.45) -- (-2.4, -2.15);
+\draw [latex-] (-2.25, -2.3) -- (-1.8, -2.6) node [below] {Optional underflow};
 
 % Accumulators
-\node (accum) at (1.2,1.5) [circle, minimum width=.7cm, draw, presLight] {};
-\draw [presLight, latex-] (accum) -- (2.25, .5) node [right, align=left] {Accumulator\\int, double,\\unlimited, ...};
+\node (accum) at (1.2,1.5) [circle, minimum width=.7cm, draw] {};
+\draw [latex-] (accum) -- (2.25, .5) node [right, align=left] {Accumulator\\int, double,\\unlimited, ...};
 
 \end{tikzpicture}
 \caption{Components of a histogram.}
@@ -248,6 +240,7 @@ Seven storages are provided, as well, including three "complex" storages made fr
 
 \subsection{Speed}
 
+Performance of the library was a key design consideration. For a significantly large 1D dataset, boost-histogram was measured to be 2.4 times faster than Numpy for regular bin spacing, which Numpy is also optimized for in 1D. For a 2D dataset, Numpy does not have special optimizations for regular binning, and in that case boost-histogram is 13 times faster. Both tests were performed with a single thread; with multithreaded filling boost-histogram can gain another factor of 2-4, depending on the number of physical threads available on your hardware and the scale of the problem.
 
 \subsection{Distribution}
 
@@ -269,20 +262,21 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 
 \begin{figure}[h]
 \begin{center}
-	\begin{tikzpicture}[every path/.style={font=\vphantom{yH}}]
+	\vspace{-.5em}
+	\begin{tikzpicture}[every path/.style={font=\vphantom{yH}\small}]
 	
-	\begin{scope}[presDark]
+	\begin{scope}
 	\node at (-2.5,0) [left] {Core histogramming libraries};
 	\node (bh) at (-.5,0)    {\bf boost-histogram};
-	\node (root) at (2,0)    {ROOT};
+	\node (root) at (2,0) {ROOT};
 	\end{scope}
 	
-	\begin{scope}[yshift=-1cm, presLight]
+	\begin{scope}[yshift=-1cm]
 	\node at (-2.5,0) [left] {Universal adaptor};
 	\node (aghast) at (0,0)  {\bf aghast};
 	\end{scope}
 	
-	\begin{scope}[yshift=-2cm, presLight2]
+	\begin{scope}[yshift=-2cm]
 	\node at (-2.5,0)     [left] {Front ends (plotting, etc)};
 	\node (hist) at (-1.6,0)     {\textbf{\textit{hist}}};
 	\node (mplhep) at (-.2,0)    {mplhep};
@@ -290,7 +284,7 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 	\node (others) at (2.4,0)    {others};
 	\end{scope}
 	
-	\begin{scope}[ultra thick, presDark2, latex-latex]
+	\begin{scope}[ultra thick, latex-latex]
 	\draw (bh) -- (aghast);
 	\draw (root) -- (aghast);
 	\draw (mplhep) -- (aghast);
@@ -300,6 +294,7 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 	\draw (others) -- (aghast);
 	\end{scope}
 	\end{tikzpicture}
+	\vspace{-1.5em}
 \end{center}
 \caption{Plan for Scikit-HEP projects and relationship between them.}
 \label{fig-scikit-plan}
