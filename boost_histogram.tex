@@ -244,16 +244,16 @@ Performance of the library was a key design consideration. For a significantly l
 
 \subsection{Distribution}
 
-To be used in the modern scientific Python software ecosystem, a library must fulfill a variety of packaging criteria. All modern packages should be hosted on PyPI.org and should provide \textbf{wheels}. Pure Python packages only need to provide universal wheels, which are smaller and do not execute a setup.py while installing, but otherwise are similar to a source package. However, compiled packages need to provide a collection of wheels, one for each Python version and each supported platform. A system was developed for boost-histogram to build these wheels on the Azure DevOps cloud platform Continuous Integration (CI) system; these are automatically built whenever a new release is made. The system developed for boost-histogram is now directly in use by three other Scikit-HEP packages, and a modified version is being used in a fourth beta package.
+To be used in the modern scientific Python ecosystem, a library must fulfill a variety of packaging criteria. All modern packages should be hosted on PyPI.org and should provide \textbf{wheels}. Pure Python packages only need to provide a ``universal wheel'', but compiled packages like boost-histogram need to provide a collection of wheels, one for each Python version and each supported platform. A system was developed for boost-histogram to build these wheels on the Azure DevOps cloud platform Continuous Integration (CI) system; these are automatically built whenever a new release is made. The system developed for boost-histogram is now directly in use by at least three other Scikit-HEP packages.
 
-On of the challenges unique to boost-histogram was the need for C++14 support by the compiler; the classic "ManyLinux1" wheels were not sufficient for compiling boost-histogram. The new ManyLinux2010 format was coming out when this was being developed, and is used, but the older ManyLinux1 specification is still in heavy use 
+On of the challenges unique to boost-histogram was the need for C++14 support by the compiler; the classic "ManyLinux1" wheels were not sufficient for compiling boost-histogram. The new ManyLinux2010 format was coming out when this was being developed, but the older ManyLinux1 specification is still in heavy use 
 (primary due to older versions of pip, the package installer for Python), so a special docker image was created that has a newer compiler but conforms to ManyLinux1. This allows boost-histogram to support both specifications.
 
-The wheel building system (and therefore boost-histogram) supports Python 2.7 and Python 3.6 through 3.8 on 64-bit architectures. On Linux systems, it also supports Python 3.5, partially because the infrestructure is already there in the the official tooling and Linux tends to have older Python versions available in official channels. For ManyLinux1 and Windows, 32-bit is also supported. As an organization, Scikit-HEP has agreed on a slightly modified version of Numpy Enhancement Proposal (NEP) 29, which outlines a community Python version support policy. Future versions of boost-histogram retain the right to remove versions that are no longer supported under that plan; the wheel building tools provide the ability to select versions and platforms for each project.
+The wheel building system (and therefore boost-histogram) supports Python 2.7 and Python 3.6 through 3.8 on 64-bit architectures. On Linux systems, it also supports Python 3.5, partially because the infrestructure is already there in the official tooling and Linux tends to have older Python versions available in official channels. For ManyLinux1 and Windows, 32-bit architecture is also supported. As an organization, Scikit-HEP has agreed on a slightly modified version of Numpy Enhancement Proposal (NEP) 29, which outlines a community Python version support policy. Future versions of boost-histogram retain the right to remove versions that are no longer supported under that plan; the wheel building tools provide the ability to select versions and platforms for each project.
 
 If a user is on an unsupported platform, such as specialized Linux distributions such as ClearLinux or Alpine, the only requirements to build boost-histogram are a C++14 compatible compiler. Every dependency is header-only and supplied in the source tarball available on PyPI or via git when building from the source repository.
 
-Another way to distribute packages that has strong community adoption in other areas, and is rapidly gaining support in HEP is Conda. Conda is an alternative package manager designed to supply binary packages to wide variety of systems. In contrast to pip, Conda never builds from source on the target machine, is less Python-centric, and provides a complete compiler stack with minimal dependencies on the underlying system. The most popular community source of packages and build infrastructure, Conda-Forge, has successfully been used to provide a complete ROOT build in for HEP (TODO: REF), and is being used to supply a growing number of HEP packages, both with and without Python. Conda-Forge packages of boost-histogram cover all supported targets of Conda-forge except for the rapidly disappearing Python 2.7 on Windows target; supported platforms include ARM and PowerPC.
+Another way to distribute packages that has strong community adoption in the sciences and is rapidly gaining support in HEP is Conda. Conda is an alternative package manager designed to supply binary packages to wide variety of systems. In contrast to pip, Conda never builds from source on the target machine, is less Python-centric, and provides a complete compiler stack with minimal dependencies on the underlying system. The most popular community source of packages and build infrastructure, Conda-Forge, has successfully been used to provide a complete ROOT build in for HEP~\cite{Burr:2019chep}, and is being used to supply a growing number of HEP packages, both with and without Python. Conda-Forge packages of boost-histogram cover all supported targets of Conda-forge except for the rapidly disappearing Python 2.7 on Windows target; supported platforms include ARM and PowerPC.
 
 \section{The Scikit-HEP family}
 \label{sec-3}
@@ -262,8 +262,8 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 
 \begin{figure}[h]
 \begin{center}
-	\vspace{-.5em}
-	\begin{tikzpicture}[every path/.style={font=\vphantom{yH}\small}]
+	\vspace{-.75em}
+	\begin{tikzpicture}[every path/.style={font=\vphantom{yH}\small}, yscale=.9]
 	
 	\begin{scope}
 	\node at (-2.5,0) [left] {Core histogramming libraries};
@@ -284,7 +284,7 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 	\node (others) at (2.4,0)    {others};
 	\end{scope}
 	
-	\begin{scope}[ultra thick, latex-latex]
+	\begin{scope}[ultra thick]
 	\draw (bh) -- (aghast);
 	\draw (root) -- (aghast);
 	\draw (mplhep) -- (aghast);
@@ -294,7 +294,7 @@ The boost-histogram project is part of a larger plan for the Scikit-HEP family o
 	\draw (others) -- (aghast);
 	\end{scope}
 	\end{tikzpicture}
-	\vspace{-1.5em}
+	\vspace{-1.75em}
 \end{center}
 \caption{Plan for Scikit-HEP projects and relationship between them.}
 \label{fig-scikit-plan}
@@ -310,16 +310,16 @@ Aghast is a histogramming library that does not fill histogram and does not plot
 \subsection{Hist}
 \label{sec-hist}
 
-Hist is a planned project that will provide an analyst-centric interface for histograms. It will use boost-histogram as the computational backend, but will connect to and depend on packages that are not allowed by the core boost-histogram package. It will use Aghast to facilitate opening and saving histograms in different formats, such as the popular ROOT format. It will also provide ways to directly plot histograms and will interact nicely with the mplhep package that is being developed. It will also initially provide extra shortcuts designed for interactive use that might eventually be accepted into the underlying boost-histogram package as well.
+Hist is a project that will provide an analyst-centric interface for histograms. It will use boost-histogram as the computational backend, but will connect to and depend on packages that are not allowed by the core boost-histogram package. It will use Aghast to facilitate opening and saving histograms in different formats. It will also provide ways to directly plot histograms and will interact nicely with the mplhep package that is being developed. It will also initially provide extra shortcuts designed for interactive use that might eventually be accepted into the underlying boost-histogram package as well.
 
 
 \section{Summary}
 \label{sec-4}
 
 
-The future for Histograms in Python is an exciting one, as high performance histograms represented as objects are now available in boost-histogram, and future releases such as Hist will provide a simple interface for analysts.
+Histograms in Python has been weak point in the adoption of Python in HEP. The future for Histograms in Python is now an exciting one, as high performance histograms represented as objects are now available through boost-histogram. And future packages such as Hist will provide a simple interface for analysts.
 
-\section{Acknowledgments}
+\section*{Acknowledgments}
 
 This work was supported by the National Science Foundation under Cooperative Agreements OAC-1836650 and OAC-1450377.
 
