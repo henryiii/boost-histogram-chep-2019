@@ -208,7 +208,7 @@ We briefly list some of the other notable features here.
 
 Boost.Histogram was developed with Python in mind. Original prototype bindings using Boost.Python were included in the draft first submitted to Boost; however, to keep the library focused they were removed before the library was accepted. New bindings based on PyBind11 were developed as part of the Scikit-HEP family of Python packages.
 
-The new bindings were designed around four key ideas based on a study of the libraries in Table~\ref{tab-libraries}: \emph{Design}, \emph{Flexibility}, \emph{Speed}, and \emph{Distribution}. No single library existing library provided a strong entry in all four of these areas.
+The new bindings were designed around four key ideas based on a study of the libraries in Table~\ref{tab-libraries}: \emph{Design}, \emph{Flexibility}, \emph{Speed}, and \emph{Distribution}. No single existing library provided a strong entry in all four of these areas.
 
 \subsection{Design}
 \label{sec-bhp-design}
@@ -229,7 +229,7 @@ The features listed in Section~\ref{sec-bh-cpp-feat} are mostly available to Pyt
 \subsubsection{UHI}
 \label{sec-bhp-uhi}
 
-\textbf{Unified Histogram Indexing} (UHI) was inspired by the an early design for Aghast (see Section~\ref{sec-aghast}). The key advancement in UHI was the design of a general API for providing ``tag'' types that can be used to perform operations in indexing. These tags can be provided by one library and used by another, and new tags can be written by users. And indexing is carefully designed to either behave like a NumPy array index if the syntax is allowed on both arrays and histograms, or to give an error on one or the other. The goal was to minimize situations where indexing will silently fail if you interchange histograms and arrays.
+\textbf{Unified Histogram Indexing} (UHI) was inspired by an early design for Aghast (see Section~\ref{sec-aghast}). The key advancement in UHI was the design of a general API for providing ``tag'' types that can be used to perform operations in indexing. These tags can be provided by one library and used by another, and new tags can be written by users. And indexing is carefully designed to either behave like a NumPy array index if the syntax is allowed on both arrays and histograms, or to give an error on one or the other. The goal was to minimize situations where indexing will silently fail if you interchange histograms and arrays.
 
 UHI allows single bin and array setting and accessing, and even provides optional access to the flow bins when setting. The third element of the Python slice syntax is used to perform actions on axes, such as rebinning or summation. While not currently implemented in version 0.6.2, the UHI specification includes arbitrary actions on axes. UHI was originally designed to provide an action per axis, though later based on user requests, it was expanded to allow a mapping to be provided, allowing a small number of axes to be operated on without having to explicitly list every axis.
 
@@ -240,7 +240,7 @@ Axes are available in a special augmented tuple. This tuple can accept any metho
 
 \subsection{Flexibility}
 
-Great care was taken to keep the incredible flexibility of Boost.Histogram intact in a dynamic, pre-compiled environment. A collection of over 20 axis types are provided, including \textbf{Regular} binning, \textbf{Integer} binning, and \textbf{Variable} binning, each with variants for underflow/overflow and growth. Both integer and string category axes are provided, also with optional growth. And regular binning can have a \textbf{transform} applied; the transform can be created by the user with a compiled callback using a language like Numba~\cite{lam2015numba} with a maximum of about 7\% penalty in speed over a precompiled function in C++.
+Great care was taken to keep the incredible flexibility of Boost.Histogram intact in a dynamic, pre-compiled environment. A collection of over 20 axis types is provided, including \textbf{Regular} binning, \textbf{Integer} binning, and \textbf{Variable} binning, each with variants for underflow/overflow and growth. Both integer and string category axes are provided, also with optional growth. And regular binning can have a \textbf{transform} applied; the transform can be created by the user with a compiled callback using a language like Numba~\cite{lam2015numba} with a maximum of about 7\% penalty in speed over a precompiled function in C++.
 
 Seven storages are provided as well, including three ``complex'' storages made from accumulators. The \textbf{Weight} storage provides high precision weighted sums that track the count as well. The \textbf{Mean} and \textbf{WeightedMean} storages can be used to produce ``profile'' histograms that track the average of a weight in each bin, rather than the total number of entries observed. In some situations, a N-dimensional profile can replace a N+1-dimensional histogram.
 
